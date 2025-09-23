@@ -1,4 +1,32 @@
+
+-- Import CTEs
+
 with
+
+customers as (
+
+    select * from {{ source('jaffle_shop', 'customers') }}
+
+),
+
+orders as (
+
+    select * from {{ source('jaffle_shop', 'orders') }}
+
+),
+
+payments as (
+
+    select * from {{ source('stripe', 'payments') }}
+
+),
+
+-- Logical CTEs
+
+-- Final CTE
+
+-- Single Select Statement
+
 
 paid_orders as (
     select
@@ -10,18 +38,18 @@ paid_orders as (
         p.payment_finalized_date,
         c.first_name as customer_first_name,
         c.last_name as customer_last_name
-    from {{ source('jaffle_shop', 'orders') }} as orders
+    from orders
     left join(
         select
             orderid as order_id,
             max(created) as payment_finalized_date,
             sum(amount) / 100.0 as total_amount_paid
-        from {{ source('stripe', 'payment') }}
+        from payments
         where status <> 'fail'
         group by 1
         ) p
     on orders.id = p.order_id
-    left join {{ source('jaffle_shop', 'customers') }} c on orders.user_id = c.id
+    left join customers c on orders.user_id = c.id
 ),
 
 customer_orders as (
@@ -30,8 +58,8 @@ customer_orders as (
         min(order_date) as first_order_date,
         max(order_date) as most_recent_order_date,
         count(orders.id) as number_of_orders
-    from {{ source('jaffle_shop', 'customers') }} c
-    left join {{ source('jaffle_shop', 'orders') }} as orders on orders.user_id = c.id
+    from customers c
+    left join orders on orders.user_id = c.id
     group by 1
 )
 
