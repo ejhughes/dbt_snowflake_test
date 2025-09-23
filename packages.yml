@@ -1,3 +1,8 @@
 packages:
+<<<<<<< HEAD
   - package: dbt-labs/audit_helper
     version: 0.12.1
+=======
+  - package: infinitelambda/audit_helper_ext
+    version: 0.3.0
+>>>>>>> 5d2e374a2475bbed69b9aec46038e6a9901d64f0
