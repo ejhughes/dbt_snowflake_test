@@ -23,6 +23,18 @@ payments as (
 
 -- Logical CTEs
 
+completed_payments as(
+
+    select
+        orderid as order_id,
+        max(created) as payment_finalized_date,
+        sum(amount) / 100.0 as total_amount_paid
+    from payments
+    where status <> 'fail'
+    group by 1
+
+    )
+
 -- Final CTE
 
 -- Single Select Statement
@@ -34,21 +46,13 @@ paid_orders as (
         orders.user_id as customer_id,
         orders.order_date as order_placed_at,
         orders.status as order_status,
-        p.total_amount_paid,
-        p.payment_finalized_date,
+        completed_paymentstotal_amount_paid,
+        completed_paymentspayment_finalized_date,
         c.first_name as customer_first_name,
         c.last_name as customer_last_name
     from orders
-    left join(
-        select
-            orderid as order_id,
-            max(created) as payment_finalized_date,
-            sum(amount) / 100.0 as total_amount_paid
-        from payments
-        where status <> 'fail'
-        group by 1
-        ) p
-    on orders.id = p.order_id
+    left join completed_payments
+    on orders.id = completed_paymentsorder_id
     left join customers c on orders.user_id = c.id
 ),
 
@@ -64,19 +68,19 @@ customer_orders as (
 )
 
 select
-    p.*,
+    completed payments.*,
 
     row_number() over (
-        order by p.order_id
+        order by completed_paymentsorder_id
     ) as transaction_seq,
 
     row_number() over (
         partition by customer_id 
-        order by p.order_id
+        order by completed_paymentsorder_id
     ) as customer_sales_seq,
 
     case
-        when c.first_order_date = p.order_placed_at 
+        when c.first_order_date = completed_paymentsorder_placed_at 
         then 'new' 
         else 'return'
     end as nvsr,
@@ -87,13 +91,15 @@ from paid_orders p
 
 left join customer_orders as c using (customer_id)
 left outer join(
-    select p.order_id, sum(t2.total_amount_paid) as clv_bad
+    select 
+        completed_paymentsorder_id, 
+        sum(t2.total_amount_paid) as clv_bad
     from paid_orders p
     left join paid_orders t2
-        on p.customer_id = t2.customer_id
-        and p.order_id >= t2.order_id
+        on completed_paymentscustomer_id = t2.customer_id
+        and completed_paymentsorder_id >= t2.order_id
     group by 1
-    order by p.order_id
+    order by completed_paymentsorder_id
     ) x
-    on x.order_id = p.order_id
+    on x.order_id = completed_paymentsorder_id
 order by order_id
