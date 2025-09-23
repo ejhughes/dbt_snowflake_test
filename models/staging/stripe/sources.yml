@@ -1,0 +1,8 @@
+version: 2 
+
+sources:  
+  - name: stripe
+    database: demo_db
+    schema: raw_stripe
+    tables:
+    - name: payment
