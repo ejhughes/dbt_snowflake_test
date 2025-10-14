@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: jaffle_shop
-    database: demo_db
-    schema: raw_jaffle_shop
+    database: til_portfolio_projects
+    schema: dbt_ehughes
     tables:
-      - name: orders
-      - name: customers
+      - name: raw_jaffle_shop__orders
+      - name: raw_jaffle_shop__customers

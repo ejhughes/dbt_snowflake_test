@@ -1,0 +1,9 @@
+snapshots:
+  - name: orders
+    relation: source('jaffle_shop', 'raw_jaffle_shop__orders') 
+    config:
+      schema: snapshots
+      database: til_portfolio_projects
+      unique_key: id
+      strategy: check
+      check_cols: ['id', 'user_id', 'order_date', 'status' ]

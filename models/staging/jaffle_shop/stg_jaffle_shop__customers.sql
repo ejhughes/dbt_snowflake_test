@@ -2,7 +2,7 @@ with
 
 source as (
 
-    select * from {{ source('jaffle_shop', 'customers') }}
+    select * from {{ source('jaffle_shop', 'raw_jaffle_shop__customers') }}
 
 ),
 

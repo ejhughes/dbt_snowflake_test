@@ -2,7 +2,7 @@ with
 
 source as (
 
-    select * from {{ source('jaffle_shop', 'orders') }}
+    select * from {{ source('jaffle_shop', 'raw_jaffle_shop__orders') }}
 
 ),
 
@@ -24,3 +24,4 @@ transformed as (
 )
 
 select * from transformed
+order by order_placed_at desc

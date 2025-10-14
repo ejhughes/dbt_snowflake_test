@@ -2,7 +2,7 @@ version: 2
 
 sources:  
   - name: stripe
-    database: demo_db
-    schema: raw_stripe
+    database: til_portfolio_projects
+    schema: dbt_ehughes
     tables:
-    - name: payment
+    - name: raw_stripe__payments
