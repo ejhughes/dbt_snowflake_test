@@ -87,7 +87,5 @@ select * from final
 {% if is_incremental() %}
     -- this filter will only be applied on an incremental run
     -- {{ this }} is a way of referencing the current model you are working in, i.e.: it's a shortcut for __ref fct_customer_orders which alos prevents issues from circular dependecies
-    where order_placed_at > date('2018-04-01')--(select max(order_placed_at) from {{ this }} -- this would be the dynamic code used if the data were being updated) 
+    where order_placed_at > date('2025-01-01')--(select max(order_placed_at) from {{ this }} -- this would be the dynamic code used if the data were being updated) 
 {% endif %}
-
-
